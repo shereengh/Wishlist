@@ -13,34 +13,36 @@ from django.contrib.auth.models import User
 from .serializers import ItemSerializer, UserCreateSerializer, MyTokenObtainPairSerializer
 
 class ItemList(ListAPIView):
-    serializer_class = ItemSerializer
-    queryset = Item.objects.all()
+	serializer_class = ItemSerializer
+	
+	def get_queryset(self):
+		return Item.objects.filter(user=self.request.user)
 
 class UserCreateAPIView(CreateAPIView):
-    serializer_class = UserCreateSerializer
+	serializer_class = UserCreateSerializer
 
 class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+	serializer_class = MyTokenObtainPairSerializer
 
 
 class AddItem(APIView):
-    serializer_class = ItemSerializer
-    permission_classes = [IsAuthenticated]
+	serializer_class = ItemSerializer
+	permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        request.data['img'] = decode_base64(request.data['img'])
-        serializer = ItemSerializer(data=request.data)
-        if serializer.is_valid():
-            item = Item.objects.create(user = request.user, 
-                name = serializer.data['name'], 
-                img = request.data['img'], 
-                url = serializer.data['url'],
-                status = serializer.data['status'], 
-            )
-            
-            item.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	def post(self, request):
+		request.data['img'] = decode_base64(request.data['img'])
+		serializer = ItemSerializer(data=request.data)
+		if serializer.is_valid():
+			item = Item.objects.create(user = request.user, 
+				name = serializer.data['name'], 
+				img = request.data['img'], 
+				url = serializer.data['url'],
+				status = serializer.data['status'], 
+			)
+			
+			item.save()
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteItem(DestroyAPIView):
 	queryset = Item.objects.all()
