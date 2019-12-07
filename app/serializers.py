@@ -40,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
     items = ItemSerializer(many=True)
     class Meta:
         model = User
-        fields = ["username", "items", "first_name", "last_name"]
+        fields = ["id", "username", "items", "first_name", "last_name"]
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()

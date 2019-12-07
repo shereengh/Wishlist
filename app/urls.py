@@ -11,7 +11,7 @@ urlpatterns = [
     path('items/', MyList.as_view(), name="my-items-list" ),
     path('items/<str:unique_id>/', ItemsList.as_view(), name="items-list" ),
 
-    path('items/add/', AddItem.as_view(), name= "item-add"),
+    path('add/', AddItem.as_view(), name= "item-add"),
     path('items/<int:item_id>/delete/',DeleteItem.as_view(), name="item-delete"),
 
 ]
