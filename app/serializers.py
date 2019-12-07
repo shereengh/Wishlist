@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Item
+from .models import Item, Profile
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -34,3 +34,16 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['username'] = user.username
         return token
+
+
+class UserSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True)
+    class Meta:
+        model = User
+        fields = ["username", "items", "first_name", "last_name"]
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Profile
+        fields = ['unique_id', 'user']
